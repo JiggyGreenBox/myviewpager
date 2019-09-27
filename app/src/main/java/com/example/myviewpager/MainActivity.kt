@@ -2,13 +2,19 @@ package com.example.myviewpager
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.myviewpager.dummy.DummyContent
 import com.google.android.material.tabs.TabLayout
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ItemFragment.OnListFragmentInteractionListener, AppCompatActivity() {
+
+    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+        Log.e("MainActivity", "interface implemented")
+    }
 
     private lateinit var mPager: ViewPager
     private lateinit var tabs: TabLayout
@@ -16,12 +22,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // old code
-//        val manager = supportFragmentManager
-//        val transaction = manager.beginTransaction()
-//        transaction.add(R.id.main_frame_layout, MyFragment())
-//        transaction.commit()
 
 
         // Instantiate a ViewPager and a PagerAdapter.
@@ -31,9 +31,11 @@ class MainActivity : AppCompatActivity() {
 
         val firstFragment: MyFragment = MyFragment.newInstance("First Fragment")
         val secondFragment: MySecondFragment = MySecondFragment.newInstance("Second Fragment")
+        val listFragment: ItemFragment = ItemFragment.newInstance(1)
 
-        pagerAdapter.addFragment(firstFragment, "ONE")
-        pagerAdapter.addFragment(secondFragment, "TWO")
+        pagerAdapter.addFragment(listFragment, "ONE")
+        pagerAdapter.addFragment(firstFragment, "TWO")
+        pagerAdapter.addFragment(secondFragment, "THREE")
 
         // The pager adapter, which provides the pages to the view pager widget.
 
@@ -50,13 +52,12 @@ class MainActivity : AppCompatActivity() {
         private val mFragmentTitleList: ArrayList<String> = ArrayList()
 
         override fun getItem(position: Int): Fragment {
-            return mFragmentList.get(position)
+            return mFragmentList[position]
         }
 
         override fun getCount(): Int {
             return mFragmentList.size
         }
-
 
         fun addFragment(fragment: Fragment, title: String) {
             mFragmentList.add(fragment)
