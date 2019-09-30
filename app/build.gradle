@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -36,4 +38,11 @@ dependencies {
 
     // added for tab strip
     implementation 'com.google.android.material:material:1.1.0-alpha10'
+
+    // for images
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+
+    // volley
+    implementation  'com.android.volley:volley:1.1.0'
 }

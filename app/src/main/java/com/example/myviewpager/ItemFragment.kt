@@ -2,6 +2,7 @@ package com.example.myviewpager
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
 
-import com.example.myviewpager.dummy.DummyContent
 import com.example.myviewpager.dummy.DummyContent.DummyItem
+import org.json.JSONArray
 
 /**
  * A fragment representing a list of Items.
@@ -25,12 +29,17 @@ class ItemFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
 
+
+    private val transactionList: ArrayList<TransactionSingle> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
+
+
     }
 
     override fun onCreateView(
@@ -46,7 +55,10 @@ class ItemFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyItemRecyclerViewAdapter(DummyContent.ITEMS, listener)
+
+                Log.e("size", "" + transactionList.size)
+                adapter = MyItemRecyclerViewAdapter(context, transactionList, listener)
+                getData(adapter as MyItemRecyclerViewAdapter)
             }
         }
         return view
@@ -57,7 +69,7 @@ class ItemFragment : Fragment() {
         if (context is OnListFragmentInteractionListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnListFragmentInteractionListener")
         }
     }
 
@@ -81,6 +93,56 @@ class ItemFragment : Fragment() {
         // TODO: Update argument type and name
         fun onListFragmentInteraction(item: DummyItem?)
     }
+
+
+    // function to get daily transactions , can also supply a date /{date}
+    private fun getData(adapter: MyItemRecyclerViewAdapter) {
+        val url = "http://fuelmaster.greenboxinnovations.in/api/admin/transactions/2019-09-29"
+
+        val request = JsonArrayRequest(
+            Request.Method.GET, url, null,
+            Response.Listener<JSONArray> { response ->
+
+                transactionList.clear()
+
+
+
+                Log.e("tag", response.toString())
+
+                for (i in 0 until response.length()) {
+                    val item = response.getJSONObject(i)
+                    Log.e("tag", "" + item["trans_time"])
+
+                    val transTime = item.optString("trans_time").replace("null", "")
+                    val transString = item.optString("trans_string").replace("null", "")
+
+                    val t = TransactionSingle(
+                        item["cust_id"] as Int,
+                        item["cust_disp_name"] as String,
+                        item.getDouble("liters"),
+                        item.getDouble("rate"),
+                        item.getDouble("amount"),
+                        item["timestamp"] as String,
+                        item["date"] as String,
+                        item.getString("car_no_plate"),
+//                        item["trans_time"] as String,
+//                        item["trans_string"] as String
+                        transTime,
+                        transString
+                    )
+                    transactionList.add(t)
+                }
+                adapter.notifyDataSetChanged()
+            },
+            Response.ErrorListener {
+                //Toast.makeText(this, "That didn't work!", Toast.LENGTH_SHORT).show()
+                Log.e("json error", "error")
+            })
+
+        VolleyService.requestQueue.add(request)
+        VolleyService.requestQueue.start()
+    }
+
 
     companion object {
 
