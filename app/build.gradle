@@ -37,7 +37,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // added for tab strip
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
+    implementation 'com.google.android.material:material:1.2.0-alpha01'
+
+    // fcm
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-iid:20.0.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'android.arch.work:work-runtime:1.0.1'
 
     // for images
     implementation 'com.github.bumptech.glide:glide:4.9.0'
@@ -46,3 +52,5 @@ dependencies {
     // volley
     implementation  'com.android.volley:volley:1.1.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

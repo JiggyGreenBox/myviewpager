@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1039724192747",
+    "firebase_url": "https://pumpadmin.firebaseio.com",
+    "project_id": "pumpadmin",
+    "storage_bucket": "pumpadmin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039724192747:android:4994b5e38c4bfa48156fae",
+        "android_client_info": {
+          "package_name": "com.example.pumpadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039724192747-cq4ae75ntj0piappcnepvrdmkg0ea3tg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApepq7jsQpS0h_raLeVbhb3JutfQLXm_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039724192747-cq4ae75ntj0piappcnepvrdmkg0ea3tg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
