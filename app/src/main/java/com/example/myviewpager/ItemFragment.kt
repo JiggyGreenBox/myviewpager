@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 
 import com.example.myviewpager.dummy.DummyContent.DummyItem
@@ -97,7 +98,7 @@ class ItemFragment : Fragment() {
 
     // function to get daily transactions , can also supply a date /{date}
     private fun getData(adapter: MyItemRecyclerViewAdapter) {
-        val url = "http://fuelmaster.greenboxinnovations.in/api/admin/transactions/2019-09-29"
+        val url = "http://fuelmaster.greenboxinnovations.in/api/admin/transactions"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -136,11 +137,11 @@ class ItemFragment : Fragment() {
             },
             Response.ErrorListener {
                 //Toast.makeText(this, "That didn't work!", Toast.LENGTH_SHORT).show()
-                Log.e("json error", "error")
+                Log.e("json error", it.toString())
             })
 
         VolleyService.requestQueue.add(request)
-        VolleyService.requestQueue.start()
+        //VolleyService.requestQueue.start()
     }
 
 

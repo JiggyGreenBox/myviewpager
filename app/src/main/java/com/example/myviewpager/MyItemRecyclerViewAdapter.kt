@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.myviewpager.ItemFragment.OnListFragmentInteractionListener
 import com.example.myviewpager.dummy.DummyContent.DummyItem
 
@@ -57,21 +59,32 @@ class MyItemRecyclerViewAdapter(
         holder.itemAmount.text = item.amount.toString()
         holder.itemLitres.text = item.litres.toString()
 
+        val requestOptions = RequestOptions()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+
         if (item.t_string != "") {
             Glide.with(context)
                 .load(url1)
+                .apply(requestOptions)
+                .thumbnail(0.05f)
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.startPhoto)
             Glide.with(context)
                 .load(url2)
+                .apply(requestOptions)
+                .thumbnail(0.05f)
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.startTopPhoto)
             Glide.with(context)
                 .load(url3)
+                .apply(requestOptions)
+                .thumbnail(0.05f)
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.stopPhoto)
             Glide.with(context)
                 .load(url4)
+                .apply(requestOptions)
+                .thumbnail(0.05f)
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.stopTopPhoto)
         } else {
