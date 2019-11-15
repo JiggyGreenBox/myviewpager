@@ -1,29 +1,32 @@
 package com.example.myviewpager
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
-
-import com.example.myviewpager.dummy.DummyContent.DummyItem
+import com.example.myviewpager.dummy.DummyContent
 import org.json.JSONArray
 
+
 /**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [ItemFragment.OnListFragmentInteractionListener] interface.
+ * A simple [Fragment] subclass.
+ * Activities that contain this fragment must implement the
+ * [MissingFragment.OnFragmentInteractionListener] interface
+ * to handle interaction events.
+ * Use the [MissingFragment.newInstance] factory method to
+ * create an instance of this fragment.
  */
-class ItemFragment : Fragment() {
+class MissingFragment : Fragment() {
 
     // TODO: Customize parameters
     private var columnCount = 1
@@ -31,7 +34,7 @@ class ItemFragment : Fragment() {
     private var listener: OnListFragmentInteractionListener? = null
 
 
-    private val transactionList: ArrayList<TransactionSingle> = ArrayList()
+    private val missingList: ArrayList<MissingSingle> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,7 @@ class ItemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_missing, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -55,9 +58,9 @@ class ItemFragment : Fragment() {
                     else -> GridLayoutManager(context, columnCount)
                 }
 
-                Log.e("size", "" + transactionList.size)
-                adapter = MyItemRecyclerViewAdapter(context, transactionList, listener)
-                getData(adapter as MyItemRecyclerViewAdapter)
+                Log.e("size", "" + missingList.size)
+                adapter = MissingRecyclerViewAdapter(context, missingList, listener)
+                getData(adapter as MissingRecyclerViewAdapter)
             }
         }
         return view
@@ -65,7 +68,7 @@ class ItemFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
+        if (context is MissingFragment.OnListFragmentInteractionListener) {
             listener = context
         } else {
             throw RuntimeException("$context must implement OnListFragmentInteractionListener")
@@ -90,19 +93,19 @@ class ItemFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: DummyContent.DummyItem?)
     }
 
 
     // function to get daily transactions , can also supply a date /{date}
-    private fun getData(adapter: MyItemRecyclerViewAdapter) {
-        val url = "http://fuelmaster.greenboxinnovations.in/api/admin/transactions"
+    private fun getData(adapter: MissingRecyclerViewAdapter) {
+        val url = "http://fuelmaster.greenboxinnovations.in/api/admin/missing"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,
             Response.Listener<JSONArray> { response ->
 
-                transactionList.clear()
+                missingList.clear()
 
 
 
@@ -110,26 +113,13 @@ class ItemFragment : Fragment() {
 
                 for (i in 0 until response.length()) {
                     val item = response.getJSONObject(i)
-                    Log.e("tag", "" + item["trans_time"])
 
-                    val transTime = item.optString("trans_time").replace("null", "")
-                    val transString = item.optString("trans_string").replace("null", "")
-
-                    val t = TransactionSingle(
-                        item["cust_id"] as Int,
-                        item["cust_disp_name"] as String,
-                        item.getDouble("liters"),
-                        item.getDouble("rate"),
-                        item.getDouble("amount"),
-                        item["timestamp"] as String,
+                    val t = MissingSingle(
                         item["date"] as String,
-                        item.getString("car_no_plate"),
-//                        item["trans_time"] as String,
-//                        item["trans_string"] as String
-                        transTime,
-                        transString
+                        item["t_string"] as String,
+                        item["items"] as String
                     )
-                    transactionList.add(t)
+                    missingList.add(t)
                 }
                 adapter.notifyDataSetChanged()
             },
@@ -151,7 +141,7 @@ class ItemFragment : Fragment() {
         // TODO: Customize parameter initialization
         @JvmStatic
         fun newInstance(columnCount: Int) =
-            ItemFragment().apply {
+            MissingFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }

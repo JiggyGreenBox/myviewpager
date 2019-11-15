@@ -17,7 +17,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 
-class MainActivity : ItemFragment.OnListFragmentInteractionListener, AppCompatActivity() {
+class MainActivity : ItemFragment.OnListFragmentInteractionListener,
+    MissingFragment.OnListFragmentInteractionListener, AppCompatActivity() {
 
     override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
         Log.e("MainActivity", "interface implemented")
@@ -29,6 +30,7 @@ class MainActivity : ItemFragment.OnListFragmentInteractionListener, AppCompatAc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         // fcm stuff
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -99,7 +101,7 @@ class MainActivity : ItemFragment.OnListFragmentInteractionListener, AppCompatAc
         val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
 
 
-        val firstFragment: MyFragment = MyFragment.newInstance("First Fragment")
+        val firstFragment: MissingFragment = MissingFragment.newInstance(1)
         val secondFragment: MySecondFragment = MySecondFragment.newInstance("Second Fragment")
         val listFragment: ItemFragment = ItemFragment.newInstance(1)
 
