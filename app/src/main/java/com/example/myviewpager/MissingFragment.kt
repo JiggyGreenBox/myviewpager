@@ -31,7 +31,7 @@ class MissingFragment : Fragment() {
     // TODO: Customize parameters
     private var columnCount = 1
 
-    private var listener: OnListFragmentInteractionListener? = null
+    private var listener: OpenMissingTransaction? = null
 
 
     private val missingList: ArrayList<MissingSingle> = ArrayList()
@@ -68,10 +68,10 @@ class MissingFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is MissingFragment.OnListFragmentInteractionListener) {
+        if (context is MissingFragment.OpenMissingTransaction) {
             listener = context
         } else {
-            throw RuntimeException("$context must implement OnListFragmentInteractionListener")
+            throw RuntimeException("$context must implement OpenMissingTransaction")
         }
     }
 
@@ -91,9 +91,9 @@ class MissingFragment : Fragment() {
      * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnListFragmentInteractionListener {
+    interface OpenMissingTransaction {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyContent.DummyItem?)
+        fun OpenMissingTransaction(item: MissingSingle)
     }
 
 

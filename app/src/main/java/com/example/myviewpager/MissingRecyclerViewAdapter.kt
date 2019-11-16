@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myviewpager.dummy.DummyContent
 
 class MissingRecyclerViewAdapter(
     private val context: Context,
     private val mValues: List<MissingSingle>,
-    private val mListener: MissingFragment.OnListFragmentInteractionListener?
+    private val mListener: MissingFragment.OpenMissingTransaction?
 ) : RecyclerView.Adapter<MissingRecyclerViewAdapter.ViewHolder>() {
 
 
@@ -19,17 +18,15 @@ class MissingRecyclerViewAdapter(
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyContent.DummyItem
+            val item = v.tag
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.OpenMissingTransaction(item as MissingSingle)
         }
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.missing_item, parent, false)
         return ViewHolder(view)
@@ -44,9 +41,14 @@ class MissingRecyclerViewAdapter(
         holder.missingDate.text = item.date
         holder.missingVal.text = item.t_string
         holder.missingTString.text = item.items
+
+        with(holder.mView) {
+            tag = item
+            setOnClickListener(mOnClickListener)
+        }
     }
 
-    inner class ViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView) {
+    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val missingDate: TextView = mView.findViewById(R.id.missing_date)
         val missingVal: TextView = mView.findViewById(R.id.missing_item)
         val missingTString: TextView = mView.findViewById(R.id.missing_t_string)

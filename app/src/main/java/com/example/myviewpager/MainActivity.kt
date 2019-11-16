@@ -2,6 +2,8 @@ package com.example.myviewpager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,18 +13,43 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.example.myviewpager.dummy.DummyContent
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
+import org.json.JSONObject
 
 class MainActivity : ItemFragment.OnListFragmentInteractionListener,
-    MissingFragment.OnListFragmentInteractionListener, AppCompatActivity() {
+    MissingFragment.OpenMissingTransaction, AppCompatActivity() {
 
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-        Log.e("MainActivity", "interface implemented")
+
+    override fun OpenMissingTransaction(item: MissingSingle) {
+        Log.e("MainActivity", "OpenMissingTransaction " + item.t_string)
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("googlechrome://navigate?url=http://fuelmaster.greenboxinnovations.in/cmsg.php?t=" + item.t_string)
+            )
+        )
     }
+
+    override fun onListFragmentInteraction(item: TransactionSingle) {
+        Log.e("MainActivity", "onListFragmentInteraction " + item.t_string)
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("googlechrome://navigate?url=http://fuelmaster.greenboxinnovations.in/cmsg.php?t=" + item.t_string)
+            )
+        )
+    }
+
+//    override fun onListFragmentInteraction(item: TransactionSingle) {
+//        Log.e("MainActivity", "interface implemented")
+//    }
 
     private lateinit var mPager: ViewPager
     private lateinit var tabs: TabLayout
@@ -78,7 +105,7 @@ class MainActivity : ItemFragment.OnListFragmentInteractionListener,
                 // Log and toast
                 val msg = getString(R.string.msg_token_fmt, token)
                 Log.d(TAG, msg)
-                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             })
         // [END retrieve_current_token]
 
@@ -91,7 +118,7 @@ class MainActivity : ItemFragment.OnListFragmentInteractionListener,
                     msg = getString(R.string.msg_subscribe_failed)
                 }
                 Log.d(TAG, msg)
-                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             }
         // [END subscribe_topics]
 
@@ -143,5 +170,29 @@ class MainActivity : ItemFragment.OnListFragmentInteractionListener,
 
     companion object {
         private const val TAG = "MainActivity"
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        getLocalServerSync()
+    }
+
+    private fun getLocalServerSync() {
+        val url = "http://fuelmaster.greenboxinnovations.in/api/admin/local_server"
+        val request = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            Response.Listener<JSONObject> { response ->
+
+                //Log.e("tag", response.toString())
+                Log.e("tag", "" + response["local_server"])
+                Toast.makeText(baseContext, response["local_server"].toString(), Toast.LENGTH_LONG)
+                    .show()
+            },
+            Response.ErrorListener {
+                //Toast.makeText(this, "That didn't work!", Toast.LENGTH_SHORT).show()
+                Log.e("json error", it.toString())
+            })
+        VolleyService.requestQueue.add(request)
     }
 }
